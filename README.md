@@ -1,16 +1,21 @@
-# novel_nest
+<div align="center">
+  <img src="./assets/logo.png" alt="Logo" height="100" width="100">
+   <h1 align="center">Novel Nest</h1>
+</div>
+<br/>
 
-A new Flutter project.
+Novel Nest is a mobile app that helps users discover books based on their reading habits and genre preferences. It allows users to search for books, view detailed information like titles, authors, and ratings, and organize their reading lists into categories such as "Want to Read," "Currently Reading," and "Finished." Users can also write reviews, rate books, and participate in community discussions through discussion boards.
 
 ## Getting Started
+1. Clone the repo<br>
+`git clone https://github.com/Phizzle32/novel_nest.git`
+2. Navigate into the directory<br>
+`cd novel_nest`
+3. Install dependencies<br>
+`flutter pub get`
+4. Run the project<br>
+`flutter run`
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Members
+- Phi Le
+- Anthony Chong
