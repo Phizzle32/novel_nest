@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_nest/firebase_options.dart';
 import 'package:novel_nest/screens/login_screen.dart';
 import 'package:novel_nest/services/auth_service.dart';
+import 'package:novel_nest/services/firestore_service.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -13,7 +14,10 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider<AuthService>(create: (_) => AuthService()),
+        Provider<FirestoreService>(create: (_) => FirestoreService()),
+        ProxyProvider<FirestoreService, AuthService>(
+          update: (_, firestoreService, __) => AuthService(firestoreService),
+        ),
       ],
       child: NovelNest(),
     ),
