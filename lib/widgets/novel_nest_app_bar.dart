@@ -16,10 +16,13 @@ class NovelNestAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      backgroundColor: const Color(0xFFEFE4DA),
       title: title != null
           ? Text(title!)
-          : const Image(image: AssetImage('assets/logo.png')),
+          : const Image(
+              image: AssetImage('assets/logo.png'),
+              height: 50,
+            ),
       centerTitle: true,
       leading: showBackButton
           ? IconButton(
