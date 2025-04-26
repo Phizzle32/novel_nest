@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:novel_nest/models/app_user.dart';
 import 'package:novel_nest/screens/book_search_screen.dart';
+import 'package:novel_nest/screens/discussion_board_screen.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -108,13 +109,14 @@ class _NovelNestDrawerState extends State<NovelNestDrawer> {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => BookSearchScreen()),
-                ); // Change to discussion board screen
+                  MaterialPageRoute(
+                      builder: (context) => DiscussionBoardScreen()),
+                );
               },
             ),
             ListTile(
               leading: Icon(Icons.account_circle),
-              title: const Text('Discussion Board'),
+              title: const Text('Profile'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
