@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:novel_nest/firebase_options.dart';
-import 'package:novel_nest/screens/login_screen.dart';
+import 'package:novel_nest/screens/splash_screen.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:novel_nest/services/firestore_service.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +48,7 @@ class NovelNest extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }
