@@ -33,6 +33,11 @@ class _DiscussionBoardScreenState extends State<DiscussionBoardScreen> {
     });
   }
 
+  Stream<List<Discussion>> _getDiscussions() {
+    final firestoreService = context.read<FirestoreService>();
+    return firestoreService.getDiscussionsStream();
+  }
+
   void _addDiscussion() {
     showDialog(
       context: context,
@@ -42,9 +47,8 @@ class _DiscussionBoardScreenState extends State<DiscussionBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreService = context.read<FirestoreService>();
-
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const NovelNestAppBar(),
       drawer: const NovelNestDrawer(),
       body: Container(
@@ -66,7 +70,7 @@ class _DiscussionBoardScreenState extends State<DiscussionBoardScreen> {
               padding: const EdgeInsets.only(top: 15),
               child: Text(
                 'Discussion Board',
-                style: Theme.of(context).textTheme.displayLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
             Expanded(
@@ -89,7 +93,7 @@ class _DiscussionBoardScreenState extends State<DiscussionBoardScreen> {
                   ],
                 ),
                 child: StreamBuilder<List<Discussion>>(
-                  stream: firestoreService.getDiscussionsStream(),
+                  stream: _getDiscussions(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());

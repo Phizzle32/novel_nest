@@ -132,8 +132,9 @@ class _DiscussionDialogState extends State<DiscussionDialog> {
             child: const Text('Cancel'),
           ),
         ElevatedButton(
-            onPressed: _submit,
-            child: Text(widget.editDiscussion == null ? 'Create' : 'Save')),
+          onPressed: _submit,
+          child: Text(widget.editDiscussion == null ? 'Create' : 'Save'),
+        ),
       ],
     );
   }

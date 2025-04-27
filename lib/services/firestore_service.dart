@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:novel_nest/models/app_user.dart';
 import 'package:novel_nest/models/discussion.dart';
+import 'package:novel_nest/models/message.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -86,10 +87,42 @@ class FirestoreService {
   // Delete user from Firestore
   Future<void> deleteDiscussion(String discussionId) async {
     try {
-      await _firestore.collection('Discussions').doc(discussionId).delete();
-      // TODO: delete messages associated with the discussion
+      final batch = _firestore.batch();
+
+      // Delete the discussion document
+      final discussionDoc =
+          _firestore.collection('Discussions').doc(discussionId);
+      batch.delete(discussionDoc);
+
+      // Delete messages associated with the discussion
+      final messagesQuerySnapshot = await _firestore
+          .collection('Messages')
+          .where('discussionId', isEqualTo: discussionId)
+          .get();
+      for (var doc in messagesQuerySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
     } catch (e) {
       throw Exception('Failed to delete discussion: $e');
+    }
+  }
+
+  Future<void> addMessage({
+    required String content,
+    required String discussionId,
+    required AppUser author,
+  }) async {
+    try {
+      await _firestore.collection('Messages').add({
+        'content': content,
+        'discussionId': discussionId,
+        'time': Timestamp.now(),
+        'username': author.displayName,
+        'userId': author.id,
+      });
+    } catch (e) {
+      throw Exception('Failed to add message: $e');
     }
   }
 
@@ -123,6 +156,20 @@ class FirestoreService {
     return _firestore.collection('Discussions').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return Discussion.fromMap(doc.id, doc.data());
+      }).toList();
+    });
+  }
+
+  // Get real-time stream of Messages
+  Stream<List<Message>> getMessagesStream(String discussionId) {
+    return _firestore
+        .collection('Messages')
+        .where('discussionId', isEqualTo: discussionId)
+        .orderBy('time')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Message.fromMap(doc.id, doc.data());
       }).toList();
     });
   }
