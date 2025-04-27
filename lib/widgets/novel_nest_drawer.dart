@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_nest/models/app_user.dart';
 import 'package:novel_nest/screens/book_search_screen.dart';
 import 'package:novel_nest/screens/discussion_board_screen.dart';
+import 'package:novel_nest/screens/profile_screen.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -120,8 +121,8 @@ class _NovelNestDrawerState extends State<NovelNestDrawer> {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => BookSearchScreen()),
-                ); // Change to profile screen
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
               },
             ),
           ],

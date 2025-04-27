@@ -26,7 +26,7 @@ class FirestoreService {
 
   // Update user information in Firestore
   Future<void> updateUser({
-    required String userId,
+    required AppUser user,
     String? email,
     String? displayName,
     List<String>? preferredGenres,
@@ -35,20 +35,45 @@ class FirestoreService {
       // Create a map of the fields to update
       Map<String, dynamic> updates = {};
 
-      if (email != null) updates['email'] = email;
-      if (displayName != null) updates['displayName'] = displayName;
-      if (preferredGenres != null) updates['preferredGenres'] = preferredGenres;
+      if (email != null && email != user.email) {
+        updates['email'] = email;
+      }
+      if (displayName != null && displayName != user.displayName) {
+        updates['displayName'] = displayName;
+        _updateUserMessages(user.id, displayName);
+      }
+      if (preferredGenres != null &&
+          preferredGenres != user.preferredGenres) {
+        updates['preferredGenres'] = preferredGenres;
+      }
 
-      await _firestore.collection('Users').doc(userId).update(updates);
+      if (updates.isNotEmpty) {
+        await _firestore.collection('Users').doc(user.id).update(updates);
+      }
     } catch (e) {
       throw Exception('Failed to update user: $e');
     }
+  }
+
+  Future<void> _updateUserMessages(String userId, String newName) async {
+    final messagesRef = _firestore.collection('Messages');
+    final userMessages =
+        await messagesRef.where('userId', isEqualTo: userId).get();
+
+    final batch = _firestore.batch();
+
+    for (var doc in userMessages.docs) {
+      batch.update(doc.reference, {'username': newName});
+    }
+
+    await batch.commit();
   }
 
   // Delete user from Firestore
   Future<void> deleteUser(String userId) async {
     try {
       await _firestore.collection('Users').doc(userId).delete();
+      // TODO: delete the user's reading list as well
     } catch (e) {
       throw Exception('Failed to delete user: $e');
     }
