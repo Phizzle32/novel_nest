@@ -207,6 +207,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: const InputDecoration(
                             labelText: 'Confirm Password',
                             border: OutlineInputBorder(),
+                            fillColor: Colors.white,
+                            filled: true,
                           ),
                           obscureText: true,
                           validator: _confirmPasswordValidator,
@@ -216,6 +218,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: const InputDecoration(
                             labelText: 'Display Name',
                             border: OutlineInputBorder(),
+                            fillColor: Colors.white,
+                            filled: true,
                           ),
                           validator: _nameValidator,
                         ),
@@ -223,6 +227,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: InputDecoration(
                             labelText: 'Preferred Genres',
                             border: const OutlineInputBorder(),
+                            fillColor: Colors.white,
+                            filled: true,
                             errorText: _isGenreError
                                 ? 'Please select at least one genre'
                                 : null,

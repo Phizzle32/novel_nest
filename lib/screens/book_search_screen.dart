@@ -15,8 +15,20 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
     return Scaffold(
       appBar: const NovelNestAppBar(),
       drawer: const NovelNestDrawer(),
-      body: const Center(
-        child: Text('Book Search Screen'),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFFC4DDE9),
+              const Color(0xFFDFD5E7),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const Center(child: Text('Book Search Screen')),
       ),
     );
   }

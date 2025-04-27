@@ -54,6 +54,28 @@ class AuthService {
     return await _firestoreService.getUserById(firebaseUser.uid);
   }
 
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    try {
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      await user.updatePassword(newPassword);
+    } catch (e) {
+      throw Exception('Failed to change password: $e');
+    }
+  }
+
   Future<void> deleteAccount() async {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser != null) {
