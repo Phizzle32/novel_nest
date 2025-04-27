@@ -40,6 +40,11 @@ class NovelNest extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Color(0xFF4F3324),
           ),
+          headlineLarge: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF4F3324),
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(

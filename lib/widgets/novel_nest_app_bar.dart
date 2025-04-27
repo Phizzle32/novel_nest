@@ -35,6 +35,9 @@ class NovelNestAppBar extends StatelessWidget implements PreferredSizeWidget {
               },
               icon: const Icon(Icons.menu),
             ),
+      shape: const Border(
+        bottom: BorderSide(color: Colors.blueGrey, width: 1.5),
+      ),
     );
   }
 }
