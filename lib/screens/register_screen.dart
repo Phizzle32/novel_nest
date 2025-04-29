@@ -84,7 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return 'Please enter your name';
     }
     if (value.length > 30) {
-      return 'Name must be less than 30 characters';
+      return 'Name must be 30 characters or less';
     }
     return null;
   }
