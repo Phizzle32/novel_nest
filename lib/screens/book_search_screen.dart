@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:novel_nest/models/app_user.dart';
 import 'package:novel_nest/models/book.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:novel_nest/services/book_service.dart';
+import 'package:novel_nest/widgets/book_list_tile.dart';
 import 'package:novel_nest/widgets/novel_nest_app_bar.dart';
 import 'package:novel_nest/widgets/novel_nest_drawer.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,8 @@ class BookSearchScreen extends StatefulWidget {
 class _BookSearchScreenState extends State<BookSearchScreen> {
   AppUser? currentUser;
   List<Book> books = [];
+  Timer? _debounce;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -37,18 +41,33 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
 
   Future<void> _getRecommendations() async {
     if (currentUser != null && currentUser!.preferredGenres.isNotEmpty) {
+      setState(() => isLoading = true);
+
       final bookService = context.read<BookService>();
       final recommendedBooks = await bookService
           .getBookRecommendations(currentUser!.preferredGenres);
+
       setState(() {
         books = recommendedBooks;
+        isLoading = false;
       });
     }
+  }
+
+  Future<void> _searchBooks(String query) async {
+    setState(() => isLoading = true);
+    final bookService = context.read<BookService>();
+    final results = await bookService.searchBooks(query);
+    setState(() {
+      books = results;
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const NovelNestAppBar(),
       drawer: const NovelNestDrawer(),
       body: Container(
@@ -66,27 +85,69 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
         ),
         child: Column(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: books.length,
-                itemBuilder: (context, index) {
-                  final book = books[index];
-                  return ListTile(
-                    leading: book.thumbnail != null
-                        ? Image.network(
-                            book.thumbnail!,
-                            width: 50,
-                            height: 75,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Icon(Icons.broken_image),
-                          )
-                        : Icon(Icons.book, size: 50),
-                    title: Text(book.title),
-                    subtitle: Text(book.authors?.join(', ') ?? ''),
-                  );
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Text(
+                'Book Search',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 30,
+              ),
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Search Books...',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.white,
+                  suffixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+                  _debounce = Timer(const Duration(milliseconds: 400), () {
+                    if (value.isEmpty) {
+                      _getRecommendations();
+                    } else {
+                      _searchBooks(value);
+                    }
+                  });
                 },
               ),
+            ),
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : books.isEmpty
+                      ? const Center(child: Text('No books found'))
+                      : Container(
+                          margin: const EdgeInsets.only(
+                            bottom: 16,
+                            right: 16,
+                            left: 16,
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blueGrey),
+                            color: const Color(0xFFF5F5F5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ListView.builder(
+                            itemCount: books.length,
+                            itemBuilder: (context, index) =>
+                                BookListTile(book: books[index]),
+                          ),
+                        ),
             ),
           ],
         ),
