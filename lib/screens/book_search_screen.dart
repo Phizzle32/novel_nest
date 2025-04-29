@@ -28,6 +28,12 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
     _initializeData();
   }
 
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
   Future<void> _initializeData() async {
     final authService = context.read<AuthService>();
     final user = await authService.getCurrentUser();
