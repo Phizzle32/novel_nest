@@ -55,6 +55,7 @@ class FirestoreService {
     }
   }
 
+  // Update a user's messages with their new name
   Future<void> _updateUserMessages(String userId, String newName) async {
     final messagesRef = _firestore.collection('Messages');
     final userMessages =
@@ -133,6 +134,7 @@ class FirestoreService {
     }
   }
 
+  // Add message to Firestore
   Future<void> addMessage({
     required String content,
     required String discussionId,
