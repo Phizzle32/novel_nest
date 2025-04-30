@@ -4,6 +4,7 @@ import 'package:novel_nest/models/discussion.dart';
 import 'package:novel_nest/models/message.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:novel_nest/services/firestore_service.dart';
+import 'package:novel_nest/widgets/app_background.dart';
 import 'package:novel_nest/widgets/novel_nest_app_bar.dart';
 import 'package:novel_nest/widgets/novel_nest_drawer.dart';
 import 'package:provider/provider.dart';
@@ -89,19 +90,7 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
         showBackButton: true,
       ),
       drawer: const NovelNestDrawer(),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFFC4DDE9),
-              const Color(0xFFDFD5E7),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: AppBackground(
         child: Column(
           children: [
             Expanded(

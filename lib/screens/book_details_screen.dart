@@ -5,6 +5,7 @@ import 'package:novel_nest/models/reading_list_entry.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:novel_nest/services/book_service.dart';
 import 'package:novel_nest/services/firestore_service.dart';
+import 'package:novel_nest/widgets/app_background.dart';
 import 'package:novel_nest/widgets/novel_nest_app_bar.dart';
 import 'package:novel_nest/widgets/novel_nest_drawer.dart';
 import 'package:provider/provider.dart';
@@ -55,19 +56,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     return Scaffold(
       appBar: const NovelNestAppBar(showBackButton: true),
       drawer: const NovelNestDrawer(),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFFC4DDE9),
-              const Color(0xFFDFD5E7),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: AppBackground(
         child: Center(
           child: isLoading
               ? const CircularProgressIndicator()
