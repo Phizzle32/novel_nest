@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:novel_nest/screens/book_search_screen.dart';
 import 'package:novel_nest/screens/register_screen.dart';
 import 'package:novel_nest/services/auth_service.dart';
+import 'package:novel_nest/widgets/app_background.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -75,19 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFFC4DDE9),
-              const Color(0xFFDFD5E7),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: AppBackground(
         child: SingleChildScrollView(
           child: Center(
             child: Column(
@@ -111,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: Border.all(color: Colors.blueGrey),
                     color: const Color(0xFFF5F5F5),
                     boxShadow: [
-                      BoxShadow(
+                      const BoxShadow(
                         color: Colors.black26,
                         blurRadius: 8,
                         offset: Offset(0, 4),

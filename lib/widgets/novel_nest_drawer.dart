@@ -42,11 +42,11 @@ class _NovelNestDrawerState extends State<NovelNestDrawer> {
         child: ListView(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFFC4DDE9),
-                    const Color(0xFFDFD5E7),
+                    Color(0xFFC4DDE9),
+                    Color(0xFFDFD5E7),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,

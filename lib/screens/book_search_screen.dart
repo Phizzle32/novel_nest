@@ -4,6 +4,7 @@ import 'package:novel_nest/models/app_user.dart';
 import 'package:novel_nest/models/book.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:novel_nest/services/book_service.dart';
+import 'package:novel_nest/widgets/app_background.dart';
 import 'package:novel_nest/widgets/book_list_tile.dart';
 import 'package:novel_nest/widgets/novel_nest_app_bar.dart';
 import 'package:novel_nest/widgets/novel_nest_drawer.dart';
@@ -76,19 +77,7 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
       resizeToAvoidBottomInset: false,
       appBar: const NovelNestAppBar(),
       drawer: const NovelNestDrawer(),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFFC4DDE9),
-              const Color(0xFFDFD5E7),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: AppBackground(
         child: Column(
           children: [
             Padding(
@@ -141,7 +130,7 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
                             border: Border.all(color: Colors.blueGrey),
                             color: const Color(0xFFF5F5F5),
                             boxShadow: [
-                              BoxShadow(
+                              const BoxShadow(
                                 color: Colors.black26,
                                 blurRadius: 8,
                                 offset: Offset(0, 4),

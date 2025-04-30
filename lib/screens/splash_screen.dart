@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:novel_nest/screens/book_search_screen.dart';
 import 'package:novel_nest/screens/login_screen.dart';
 import 'package:novel_nest/services/auth_service.dart';
+import 'package:novel_nest/widgets/app_background.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -59,18 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFFC4DDE9),
-              const Color(0xFFDFD5E7),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: AppBackground(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 20,

@@ -16,7 +16,7 @@ class BookListTile extends StatelessWidget {
         border: Border.all(color: Colors.blueGrey),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Colors.black26,
             blurRadius: 8,
             offset: Offset(0, 4),
@@ -39,7 +39,7 @@ class BookListTile extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BookDetailsScreen(book: book),
+              builder: (context) => BookDetailsScreen(bookId: book.id),
             ),
           );
         },
