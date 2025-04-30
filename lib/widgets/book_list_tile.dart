@@ -39,7 +39,7 @@ class BookListTile extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BookDetailsScreen(book: book),
+              builder: (context) => BookDetailsScreen(bookId: book.id),
             ),
           );
         },

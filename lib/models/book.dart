@@ -5,6 +5,8 @@ class Book {
   final List<String>? authors;
   final String? description;
   final String? thumbnail;
+  final double? averageRating;
+  final int? ratingsCount;
 
   Book({
     required this.id,
@@ -13,6 +15,8 @@ class Book {
     this.authors,
     this.description,
     this.thumbnail,
+    this.averageRating,
+    this.ratingsCount,
   });
 
   factory Book.fromMap(Map<String, dynamic> data) {
@@ -25,6 +29,8 @@ class Book {
       authors: (volumeInfo['authors'] as List?)?.cast<String>(),
       description: volumeInfo['description'],
       thumbnail: volumeInfo['imageLinks']?['thumbnail'],
+      averageRating: volumeInfo['averageRating']?.toDouble(),
+      ratingsCount: volumeInfo['ratingsCount'],
     );
   }
 }

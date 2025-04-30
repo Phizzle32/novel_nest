@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:novel_nest/models/app_user.dart';
+import 'package:novel_nest/models/book.dart';
 import 'package:novel_nest/models/discussion.dart';
 import 'package:novel_nest/models/message.dart';
+import 'package:novel_nest/models/reading_list_entry.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -42,8 +44,7 @@ class FirestoreService {
         updates['displayName'] = displayName;
         _updateUserMessages(user.id, displayName);
       }
-      if (preferredGenres != null &&
-          preferredGenres != user.preferredGenres) {
+      if (preferredGenres != null && preferredGenres != user.preferredGenres) {
         updates['preferredGenres'] = preferredGenres;
       }
 
@@ -73,8 +74,22 @@ class FirestoreService {
   // Delete user from Firestore
   Future<void> deleteUser(String userId) async {
     try {
-      await _firestore.collection('Users').doc(userId).delete();
-      // TODO: delete the user's reading list as well
+      final batch = _firestore.batch();
+
+      // Delete the user document
+      final userDoc = _firestore.collection('Users').doc(userId);
+      batch.delete(userDoc);
+
+      // Delete the user's reading list
+      final readingListQuerySnapshot = await _firestore
+          .collection('ReadingList')
+          .where('userId', isEqualTo: userId)
+          .get();
+      for (var doc in readingListQuerySnapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      batch.commit();
     } catch (e) {
       throw Exception('Failed to delete user: $e');
     }
@@ -128,6 +143,7 @@ class FirestoreService {
       for (var doc in messagesQuerySnapshot.docs) {
         batch.delete(doc.reference);
       }
+
       await batch.commit();
     } catch (e) {
       throw Exception('Failed to delete discussion: $e');
@@ -153,6 +169,67 @@ class FirestoreService {
     }
   }
 
+  // Add book to user's reading list in Firestore
+  Future<void> addToReadingList({
+    required Book book,
+    required String userId,
+    required String status,
+  }) async {
+    try {
+      await _firestore.collection('ReadingList').add({
+        'bookId': book.id,
+        'title': book.title,
+        'authors': book.authors,
+        'thumbnail': book.thumbnail,
+        'userId': userId,
+        'status': status,
+      });
+    } catch (e) {
+      throw Exception('Failed to add to reading list: $e');
+    }
+  }
+
+  // Update a user's reading list entry in Firestore
+  Future<void> updateReadingListEntry({
+    required String userId,
+    required String bookId,
+    required String status,
+  }) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('ReadingList')
+          .where('userId', isEqualTo: userId)
+          .where('bookId', isEqualTo: bookId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.update({'status': status});
+      }
+    } catch (e) {
+      throw Exception('Failed to update reading list entry: $e');
+    }
+  }
+
+  // Delete a user's reading list entry in Firestore
+  Future<void> deleteReadingListEntry({
+    required String userId,
+    required String bookId,
+  }) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('ReadingList')
+          .where('userId', isEqualTo: userId)
+          .where('bookId', isEqualTo: bookId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      throw Exception('Failed to delete reading list entry: $e');
+    }
+  }
+
   // Get user by ID from Firestore
   Future<AppUser?> getUserById(String userId) async {
     try {
@@ -163,6 +240,44 @@ class FirestoreService {
       return null;
     } catch (e) {
       return null;
+    }
+  }
+
+  // Get a reading list entry from Firestore
+  Future<ReadingListEntry?> getReadingListEntry({
+    required String userId,
+    required String bookId,
+  }) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('ReadingList')
+          .where('userId', isEqualTo: userId)
+          .where('bookId', isEqualTo: bookId)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return ReadingListEntry.fromMap(querySnapshot.docs.first.data());
+      }
+      return null;
+    } catch (e) {
+      throw Exception('Failed to fetch reading list entry: $e');
+    }
+  }
+
+  // Get a user's reading list from Firestore
+  Future<List<ReadingListEntry>> getUserReadingList(String userId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('ReadingList')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => ReadingListEntry.fromMap(doc.data()))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to fetch reading list entries: $e');
     }
   }
 
