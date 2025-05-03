@@ -310,22 +310,6 @@ class FirestoreService {
     }
   }
 
-  // Get a user's reading list from Firestore
-  Future<List<ReadingListEntry>> getUserReadingList(String userId) async {
-    try {
-      final querySnapshot = await _firestore
-          .collection('ReadingList')
-          .where('userId', isEqualTo: userId)
-          .get();
-
-      return querySnapshot.docs
-          .map((doc) => ReadingListEntry.fromMap(doc.data()))
-          .toList();
-    } catch (e) {
-      throw Exception('Failed to fetch reading list entries: $e');
-    }
-  }
-
   // Get reviews for a book from Firestore
   Future<List<Review>> getBookReviews(String bookId) async {
     try {
@@ -374,6 +358,19 @@ class FirestoreService {
         .map((snapshot) {
       return snapshot.docs.map((doc) {
         return Message.fromMap(doc.id, doc.data());
+      }).toList();
+    });
+  }
+
+  // Get real-time stream of reading list entries
+  Stream<List<ReadingListEntry>> getReadingListStream(String userId) {
+    return _firestore
+        .collection('ReadingList')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return ReadingListEntry.fromMap(doc.data());
       }).toList();
     });
   }
