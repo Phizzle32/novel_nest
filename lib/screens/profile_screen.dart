@@ -57,9 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter your name';
     }
-    if (value.length > 20) {
-      return 'Name must be 20 characters or less';
-    }
     return null;
   }
 
@@ -252,9 +249,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Display Name',
                           border: OutlineInputBorder(),
+                          counterText: '',
                           fillColor: Colors.white,
                           filled: true,
                         ),
+                        maxLength: 20,
                         validator: _nameValidator,
                       ),
                       DropdownButtonFormField<String>(
@@ -338,7 +337,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           ElevatedButton(
                             style: const ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Colors.red),
+                              backgroundColor:
+                                  WidgetStatePropertyAll(Colors.red),
                               foregroundColor:
                                   WidgetStatePropertyAll(Colors.white),
                             ),

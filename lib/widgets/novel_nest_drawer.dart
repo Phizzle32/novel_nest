@@ -52,39 +52,46 @@ class _NovelNestDrawerState extends State<NovelNestDrawer> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                spacing: 8,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Icon(
-                    Icons.account_circle,
-                    size: 60,
-                    color: Colors.blueGrey,
-                  ),
-                  SizedBox(
-                    width: 200,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user?.displayName ?? 'Guest',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 8,
+                    children: [
+                      const Icon(
+                        Icons.account_circle,
+                        size: 60,
+                        color: Colors.blueGrey,
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              user?.displayName ?? 'Guest',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              softWrap: true,
+                            ),
+                            Text(
+                              user?.email ?? '',
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                            ),
+                            const SizedBox(height: 6),
+                          ],
                         ),
-                        Text(
-                          user?.email ?? '',
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 6),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -84,9 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter your name';
     }
-    if (value.length > 20) {
-      return 'Name must be 20 characters or less';
-    }
     return null;
   }
 
@@ -207,9 +204,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           decoration: const InputDecoration(
                             labelText: 'Display Name',
                             border: OutlineInputBorder(),
+                            counterText: '',
                             fillColor: Colors.white,
                             filled: true,
                           ),
+                          maxLength: 20,
                           validator: _nameValidator,
                         ),
                         DropdownButtonFormField<String>(
