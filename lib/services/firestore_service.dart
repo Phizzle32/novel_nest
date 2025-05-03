@@ -4,6 +4,7 @@ import 'package:novel_nest/models/book.dart';
 import 'package:novel_nest/models/discussion.dart';
 import 'package:novel_nest/models/message.dart';
 import 'package:novel_nest/models/reading_list_entry.dart';
+import 'package:novel_nest/models/review.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -42,7 +43,7 @@ class FirestoreService {
       }
       if (displayName != null && displayName != user.displayName) {
         updates['displayName'] = displayName;
-        _updateUserMessages(user.id, displayName);
+        _updateUserDisplayName(user.id, displayName);
       }
       if (preferredGenres != null && preferredGenres != user.preferredGenres) {
         updates['preferredGenres'] = preferredGenres;
@@ -56,16 +57,37 @@ class FirestoreService {
     }
   }
 
-  // Update a user's messages with their new name
-  Future<void> _updateUserMessages(String userId, String newName) async {
-    final messagesRef = _firestore.collection('Messages');
-    final userMessages =
-        await messagesRef.where('userId', isEqualTo: userId).get();
+  // Update a user's messages, discussions, and reviews with their new name
+  Future<void> _updateUserDisplayName(String userId, String newName) async {
+    final userMessages = await _firestore
+        .collection('Messages')
+        .where('userId', isEqualTo: userId)
+        .get();
+    final userDiscussions = await _firestore
+        .collection('Discussions')
+        .where('authorId', isEqualTo: userId)
+        .get();
+    final userReviews = await _firestore
+        .collection('Reviews')
+        .where('authorId', isEqualTo: userId)
+        .get();
+
+    if (userMessages.docs.isEmpty &&
+        userDiscussions.docs.isEmpty &&
+        userReviews.docs.isEmpty) {
+      return;
+    }
 
     final batch = _firestore.batch();
 
     for (var doc in userMessages.docs) {
       batch.update(doc.reference, {'username': newName});
+    }
+    for (var doc in userDiscussions.docs) {
+      batch.update(doc.reference, {'author': newName});
+    }
+    for (var doc in userReviews.docs) {
+      batch.update(doc.reference, {'author': newName});
     }
 
     await batch.commit();
@@ -230,6 +252,29 @@ class FirestoreService {
     }
   }
 
+  // Add a user review to Firestore
+  Future<void> addReview({
+    required String bookId,
+    required AppUser user,
+    required String title,
+    required String content,
+    required double rating,
+  }) async {
+    try {
+      await _firestore.collection('Reviews').add({
+        'bookId': bookId,
+        'authorId': user.id,
+        'author': user.displayName,
+        'title': title,
+        'content': content,
+        'rating': rating,
+        'time': Timestamp.now(),
+      });
+    } catch (e) {
+      throw Exception('Failed to add review: $e');
+    }
+  }
+
   // Get user by ID from Firestore
   Future<AppUser?> getUserById(String userId) async {
     try {
@@ -278,6 +323,23 @@ class FirestoreService {
           .toList();
     } catch (e) {
       throw Exception('Failed to fetch reading list entries: $e');
+    }
+  }
+
+  // Get reviews for a book from Firestore
+  Future<List<Review>> getBookReviews(String bookId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('Reviews')
+          .where('bookId', isEqualTo: bookId)
+          .orderBy('time')
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => Review.fromMap(doc.data()))
+          .toList();
+    } catch (e) {
+      throw Exception('Failed to fetch reviews: $e');
     }
   }
 

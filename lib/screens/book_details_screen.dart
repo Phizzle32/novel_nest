@@ -3,10 +3,12 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:novel_nest/models/app_user.dart';
 import 'package:novel_nest/models/book.dart';
 import 'package:novel_nest/models/reading_list_entry.dart';
+import 'package:novel_nest/models/review.dart';
 import 'package:novel_nest/services/auth_service.dart';
 import 'package:novel_nest/services/book_service.dart';
 import 'package:novel_nest/services/firestore_service.dart';
 import 'package:novel_nest/widgets/app_background.dart';
+import 'package:novel_nest/widgets/book_reviews.dart';
 import 'package:novel_nest/widgets/novel_nest_app_bar.dart';
 import 'package:novel_nest/widgets/novel_nest_drawer.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +27,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   AppUser? currentUser;
   ReadingListEntry? readingListEntry;
   String? readingStatus;
+  List<Review> reviews = [];
   bool isLoading = true;
 
   final List<String> statuses = [
@@ -47,15 +50,23 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     final firestoreService = context.read<FirestoreService>();
 
     final user = await authService.getCurrentUser();
-    final bookDetails = await bookService.getBookById(widget.bookId);
-    readingListEntry = await firestoreService.getReadingListEntry(
-      userId: user?.id ?? '',
-      bookId: widget.bookId,
-    );
+
+    // Make concurrent calls to fetch data
+    final results = await Future.wait([
+      firestoreService.getReadingListEntry(
+        userId: user?.id ?? '',
+        bookId: widget.bookId,
+      ),
+      bookService.getBookById(widget.bookId),
+      firestoreService.getBookReviews(widget.bookId),
+    ]);
+
+    readingListEntry = results[0] as ReadingListEntry?;
 
     setState(() {
       currentUser = user;
-      book = bookDetails;
+      book = results[1] as Book;
+      reviews = results[2] as List<Review>;
       readingStatus = readingListEntry?.status;
       isLoading = false;
     });
@@ -82,10 +93,22 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   }
 
   String _getBookRating() {
-    if (book.averageRating == null) {
-      return "N/A";
+    if (reviews.isEmpty) {
+      return (book.averageRating == null || book.ratingsCount == null)
+          ? 'N/A'
+          : '${book.averageRating!.toStringAsFixed(1)} / 5';
     }
-    return '${book.averageRating!.toStringAsFixed(1)} / 5';
+
+    double averageRating = book.averageRating ?? 0.0;
+    int ratingsCount = book.ratingsCount ?? 0;
+
+    double totalReviewRating =
+        reviews.fold(0.0, (sum, review) => sum + review.rating);
+    double rating =
+        (averageRating * ratingsCount + totalReviewRating) /
+            (ratingsCount + reviews.length);
+
+    return '${rating.toStringAsFixed(1)} / 5';
   }
 
   Future<void> _updateReadingListEntry(String? newStatus) async {
@@ -139,9 +162,18 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     }
   }
 
+  Future<void> _updateReviews() async {
+    final firestoreService = context.read<FirestoreService>();
+    final bookReviews = await firestoreService.getBookReviews(widget.bookId);
+    setState(() {
+      reviews = bookReviews;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const NovelNestAppBar(showBackButton: true),
       drawer: const NovelNestDrawer(),
       body: AppBackground(
@@ -237,7 +269,12 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                           ),
                         ],
                       ),
-                    )
+                    ),
+                    BookReviews(
+                      bookId: widget.bookId,
+                      reviews: reviews,
+                      onSubmit: _updateReviews,
+                    ),
                   ],
                 ),
               ),
