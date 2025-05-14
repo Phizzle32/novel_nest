@@ -131,26 +131,35 @@ class _BookReviewsState extends State<BookReviews> {
                       return null;
                     },
                   ),
-                  Row(
-                    spacing: 5,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.star, color: Colors.amber),
-                      Text(
-                        '${_rating.toInt()} / 5',
-                        style: TextStyle(fontSize: 16),
+                      const Text(
+                        'Rating:',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: List.generate(5, (index) {
+                          final starIndex = index + 1;
+                          return IconButton(
+                            icon: Icon(
+                              Icons.star,
+                              color: _rating >= starIndex
+                                  ? Colors.amber
+                                  : Colors.grey,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _rating = starIndex.toDouble();
+                              });
+                            },
+                          );
+                        }),
                       ),
                     ],
-                  ),
-                  Slider(
-                    value: _rating,
-                    min: 1,
-                    max: 5,
-                    divisions: 4,
-                    onChanged: (value) {
-                      setState(() {
-                        _rating = value;
-                      });
-                    },
                   ),
                   TextFormField(
                     controller: _reviewController,
