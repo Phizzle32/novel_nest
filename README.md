@@ -4,7 +4,7 @@
 </div>
 <br/>
 
-Novel Nest is a mobile app that helps users discover books based on their reading habits and genre preferences. It allows users to search for books, view detailed information like titles, authors, and ratings, and organize their reading lists into categories such as "Want to Read," "Currently Reading," and "Finished." Users can also write reviews, rate books, and participate in community discussions through discussion boards.
+Novel Nest is a mobile app that helps users discover books based on their reading habits and genre preferences. It allows users to search for books, view detailed information like titles, authors, and ratings, and organize their reading lists into categories such as "Plan to Read," "Currently Reading," "Finished," and "Dropped." Users can also write reviews, rate books, and participate in community discussions through discussion boards.
 
 ## Getting Started
 1. Clone the repo<br>
@@ -19,3 +19,7 @@ Novel Nest is a mobile app that helps users discover books based on their readin
 ## Members
 - Phi Le
 - Anthony Chong
+
+## Presentation
+- [Slides](https://docs.google.com/presentation/d/1RupChE_yj1ppEilfTWr9SOAMYFirb9EvB1Hzp4T-DrY/edit?usp=sharing)
+- [Video](https://youtu.be/yq-vlo3BMpk)
